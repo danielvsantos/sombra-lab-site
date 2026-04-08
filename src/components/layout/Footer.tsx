@@ -77,7 +77,9 @@ export default function Footer() {
               </p>
               <div className="flex gap-4">
                 <a
-                  href="#"
+                  href="https://www.instagram.com/sombra_lab"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="font-mono text-sm text-foreground/60 hover:text-foreground transition-colors"
                 >
                   Instagram
