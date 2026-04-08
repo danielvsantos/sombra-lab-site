@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# raw assets (large source files before conversion, not for git)
+/raw/
+
 # vercel
 .vercel
 
