@@ -1,65 +1,128 @@
-import Image from "next/image";
+import Link from "next/link";
+import AnimatedText from "@/components/ui/AnimatedText";
+import MixedMediaBento from "@/components/ui/MixedMediaBento";
+import ClientTicker from "@/components/ui/ClientTicker";
+import ProjectCard from "@/components/ui/ProjectCard";
+import { projects } from "@/data/projects";
+import { MediaItem } from "@/types";
+
+// Placeholder bento items — replace with real video paths from public/assets/homepage/
+const bentoItems: MediaItem[] = [
+  { src: "/assets/homepage/reel-1.mp4", poster: "/assets/homepage/reel-1-poster.jpg", aspectRatio: "9:16" },
+  { src: "/assets/homepage/reel-2.mp4", poster: "/assets/homepage/reel-2-poster.jpg", aspectRatio: "9:16" },
+  { src: "/assets/homepage/reel-3.mp4", poster: "/assets/homepage/reel-3-poster.jpg", aspectRatio: "9:16" },
+];
+
+const featuredProjects = projects.filter((p) => p.featured);
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <>
+      {/* Hero: Bento Grid with Sticky Overlay */}
+      <section className="relative">
+        {/* Mobile: static hero text */}
+        <div className="px-6 pt-28 pb-6 md:hidden">
+          <h1 className="font-sans font-medium text-3xl leading-tight">
+            We bring striking visions out of the shadows.
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="font-mono text-foreground/60 mt-4 text-sm">
+            Concept, production, and growth for upscale brands.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/work"
+            className="inline-block mt-6 font-mono text-sm px-6 py-3 bg-accent text-foreground rounded-full hover:bg-hover hover:text-accent transition-all"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            Enter the Lab
+          </Link>
         </div>
-      </main>
-    </div>
+
+        {/* Desktop: sticky overlay over bento grid */}
+        <div className="relative hidden md:block">
+          <div className="sticky top-1/2 -translate-y-1/2 z-10 pointer-events-none text-center px-6 py-32">
+            <h1
+              className="font-sans font-medium md:text-5xl lg:text-7xl leading-tight"
+              style={{
+                textShadow:
+                  "0 0 60px rgba(10,10,10,0.9), 0 0 120px rgba(10,10,10,0.7)",
+              }}
+            >
+              We bring striking visions
+              <br />
+              out of the shadows.
+            </h1>
+            <p
+              className="font-mono text-foreground/70 mt-6 text-base"
+              style={{ textShadow: "0 0 40px rgba(10,10,10,0.9)" }}
+            >
+              Concept, production, and growth for upscale brands.
+            </p>
+            <Link
+              href="/work"
+              className="pointer-events-auto inline-block mt-8 font-mono text-sm px-8 py-3 bg-accent text-foreground rounded-full hover:bg-hover hover:text-accent transition-all"
+            >
+              Enter the Lab
+            </Link>
+          </div>
+
+          <div className="-mt-[50vh]">
+            <MixedMediaBento items={bentoItems} />
+          </div>
+        </div>
+
+        {/* Mobile bento grid (no sticky overlay) */}
+        <div className="md:hidden">
+          <MixedMediaBento items={bentoItems} />
+        </div>
+      </section>
+
+      {/* Client Ticker */}
+      <ClientTicker />
+
+      {/* Manifesto */}
+      <section className="px-6 py-20 md:py-32 max-w-5xl mx-auto">
+        <AnimatedText
+          text="Sombra is a creative and production lab in Barcelona dedicated to crafting impactful visual identities. We specialize in creating and producing high-quality videos and photography that fuses Beauty, innovation and purpose-driven storytelling."
+          as="p"
+          className="font-mono text-lg md:text-xl lg:text-2xl leading-relaxed text-foreground/80"
+        />
+      </section>
+
+      {/* Featured Work */}
+      <section className="px-6 pb-20 md:pb-32">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between mb-12">
+            <h2 className="font-sans font-medium text-2xl md:text-3xl">
+              Featured Work
+            </h2>
+            <Link
+              href="/work"
+              className="font-mono text-sm text-foreground/60 hover:text-foreground transition-colors"
+            >
+              View All Work &rarr;
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {featuredProjects.map((project) => (
+              <ProjectCard key={project.slug} project={project} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Bottom CTA */}
+      <section className="px-6 py-20 md:py-32 text-center border-t border-border">
+        <AnimatedText
+          text="Ready to create something striking?"
+          as="h2"
+          className="font-sans font-medium text-2xl md:text-4xl lg:text-5xl justify-center mb-8"
+        />
+        <Link
+          href="/start"
+          className="inline-block font-mono text-sm px-8 py-3 bg-accent text-foreground rounded-full hover:bg-hover hover:text-accent transition-all"
+        >
+          Start a Project
+        </Link>
+      </section>
+    </>
   );
 }
