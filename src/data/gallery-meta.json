@@ -1,0 +1,137 @@
+{
+  "abac": {
+    "gallery-1.jpg": "vertical",
+    "gallery-2.jpg": "vertical",
+    "gallery-3.jpg": "vertical",
+    "gallery-1.mp4": "vertical",
+    "gallery-2.mp4": "vertical",
+    "gallery-3.mp4": "vertical",
+    "gallery-4.mp4": "vertical",
+    "gallery-5.mp4": "vertical",
+    "gallery-6.mp4": "vertical"
+  }
+,
+  "angle": {
+    "gallery-1.jpg": "vertical",
+    "gallery-2.jpg": "vertical",
+    "gallery-3.jpg": "vertical",
+    "gallery-1.mp4": "horizontal",
+    "gallery-2.mp4": "vertical",
+    "gallery-3.mp4": "vertical",
+    "gallery-4.mp4": "horizontal",
+    "gallery-5.mp4": "vertical"
+  }
+,
+  "atempo": {
+    "gallery-1.jpg": "horizontal",
+    "gallery-2.jpg": "vertical",
+    "gallery-3.jpg": "vertical",
+    "gallery-1.mp4": "vertical",
+    "gallery-2.mp4": "vertical",
+    "gallery-3.mp4": "vertical",
+    "gallery-4.mp4": "horizontal",
+    "gallery-5.mp4": "vertical",
+    "gallery-6.mp4": "vertical"
+  }
+,
+  "brava-sushi": {
+    "gallery-1.jpg": "vertical",
+    "gallery-2.jpg": "vertical",
+    "gallery-3.jpg": "vertical",
+    "gallery-4.jpg": "vertical",
+    "gallery-5.jpg": "vertical",
+    "gallery-6.jpg": "vertical",
+    "gallery-7.jpg": "vertical",
+    "gallery-8.jpg": "vertical",
+    "gallery-1.mp4": "vertical",
+    "gallery-2.mp4": "vertical"
+  }
+,
+  "buriti": {
+    "gallery-1.jpg": "horizontal",
+    "gallery-2.jpg": "horizontal",
+    "gallery-1.mp4": "vertical",
+    "gallery-2.mp4": "vertical",
+    "gallery-3.mp4": "vertical",
+    "gallery-4.mp4": "horizontal",
+    "gallery-5.mp4": "vertical",
+    "gallery-6.mp4": "vertical",
+    "gallery-7.mp4": "vertical",
+    "gallery-8.mp4": "vertical"
+  }
+,
+  "elijah": {
+    "gallery-1.mp4": "vertical"
+  }
+,
+  "manta": {
+    "gallery-1.jpg": "vertical",
+    "gallery-2.jpg": "vertical",
+    "gallery-3.jpg": "vertical",
+    "gallery-4.jpg": "vertical",
+    "gallery-5.jpg": "vertical",
+    "gallery-1.mp4": "vertical",
+    "gallery-2.mp4": "horizontal",
+    "gallery-3.mp4": "vertical",
+    "gallery-4.mp4": "vertical",
+    "gallery-5.mp4": "horizontal",
+    "gallery-6.mp4": "vertical",
+    "gallery-7.mp4": "horizontal",
+    "gallery-8.mp4": "vertical",
+    "gallery-9.mp4": "vertical"
+  }
+,
+  "nooda-organics": {
+    "gallery-1.jpg": "vertical",
+    "gallery-2.jpg": "vertical",
+    "gallery-3.jpg": "vertical",
+    "gallery-4.jpg": "vertical",
+    "gallery-5.jpg": "vertical",
+    "gallery-6.jpg": "vertical",
+    "gallery-1.mp4": "vertical",
+    "gallery-2.mp4": "horizontal",
+    "gallery-3.mp4": "vertical",
+    "gallery-4.mp4": "vertical",
+    "gallery-5.mp4": "horizontal",
+    "gallery-6.mp4": "vertical",
+    "gallery-7.mp4": "vertical"
+  }
+,
+  "paka": {
+    "gallery-1.mp4": "horizontal",
+    "gallery-2.mp4": "vertical",
+    "gallery-3.mp4": "vertical",
+    "gallery-4.mp4": "vertical",
+    "gallery-5.mp4": "vertical"
+  }
+,
+  "pinga": {
+    "gallery-1.jpg": "vertical",
+    "gallery-10.jpg": "vertical",
+    "gallery-11.jpg": "vertical",
+    "gallery-12.jpg": "vertical",
+    "gallery-13.jpg": "vertical",
+    "gallery-14.jpg": "vertical",
+    "gallery-2.jpg": "vertical",
+    "gallery-3.jpg": "vertical",
+    "gallery-4.jpg": "vertical",
+    "gallery-5.jpg": "vertical",
+    "gallery-6.jpg": "vertical",
+    "gallery-7.jpg": "vertical",
+    "gallery-8.jpg": "vertical",
+    "gallery-9.jpg": "vertical",
+    "gallery-1.mp4": "vertical",
+    "gallery-2.mp4": "vertical",
+    "gallery-3.mp4": "vertical"
+  }
+,
+  "pov-beauty": {
+    "gallery-1.jpg": "vertical",
+    "gallery-2.jpg": "vertical",
+    "gallery-3.jpg": "horizontal",
+    "gallery-4.jpg": "vertical",
+    "gallery-5.jpg": "vertical",
+    "gallery-6.jpg": "square",
+    "gallery-1.mp4": "vertical"
+  }
+}

@@ -28,12 +28,13 @@ export default function ServicesPage() {
         </div>
 
         {/* Service cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-24 md:mb-32">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-24 md:mb-32">
           {services.map((service, i) => (
             <ServiceCard
               key={service.title}
               title={service.title}
               description={service.description}
+              icon={service.icon}
               index={i}
             />
           ))}

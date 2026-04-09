@@ -13,7 +13,19 @@ const bentoItems: MediaItem[] = [
   { src: "/assets/homepage/reel-3.mp4", poster: "/assets/homepage/reel-3-poster.jpg", aspectRatio: "9:16" },
 ];
 
-const featuredProjects = projects.filter((p) => p.featured);
+// Manually order featured projects to interleave video covers and image covers
+// for visual balance (avoid clustering all photos on one side)
+const featuredOrder = [
+  "abac",          // video (vertical)
+  "angle",         // image (vertical)
+  "atempo",        // video (vertical)
+  "pov-beauty",    // image (vertical)
+  "brava-sushi",   // video (vertical)
+  "nooda-organics",// video (vertical)
+];
+const featuredProjects = featuredOrder
+  .map((slug) => projects.find((p) => p.slug === slug))
+  .filter((p): p is NonNullable<typeof p> => p !== undefined);
 
 export default function Home() {
   return (
@@ -36,37 +48,28 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* Desktop: sticky overlay over bento grid */}
+        {/* Desktop: compact hero with bento peeking up from below */}
         <div className="relative hidden md:block">
-          <div className="sticky top-1/2 -translate-y-1/2 z-10 pointer-events-none text-center px-6 py-32">
+          <div className="text-center px-6 pt-32 pb-12 lg:pt-36 lg:pb-16">
             <h1
-              className="font-sans font-medium md:text-5xl lg:text-7xl leading-tight"
-              style={{
-                textShadow:
-                  "0 0 60px rgba(10,10,10,0.9), 0 0 120px rgba(10,10,10,0.7)",
-              }}
+              className="font-sans font-medium md:text-4xl lg:text-5xl xl:text-6xl leading-tight"
             >
               We bring striking visions
               <br />
               out of the shadows.
             </h1>
-            <p
-              className="font-mono text-foreground/70 mt-6 text-base"
-              style={{ textShadow: "0 0 40px rgba(10,10,10,0.9)" }}
-            >
+            <p className="font-mono text-foreground/70 mt-5 text-sm lg:text-base">
               Concept, production, and growth for upscale brands.
             </p>
             <Link
               href="/work"
-              className="pointer-events-auto inline-block mt-8 font-mono text-sm px-8 py-3 bg-accent text-foreground rounded-full hover:bg-hover hover:text-accent transition-all"
+              className="inline-block mt-7 font-mono text-sm px-8 py-3 bg-accent text-foreground rounded-full hover:bg-hover hover:text-accent transition-all"
             >
               Enter the Lab
             </Link>
           </div>
 
-          <div className="-mt-[50vh]">
-            <MixedMediaBento items={bentoItems} />
-          </div>
+          <MixedMediaBento items={bentoItems} />
         </div>
 
         {/* Mobile bento grid (no sticky overlay) */}

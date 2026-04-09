@@ -4,14 +4,14 @@
   --color-background: #0A0A0A;
   --color-foreground: #FFFFFF;
   --color-accent: #400f6b;
-  --color-success: #5E7F50;
+  --color-success: #D9D9D9;
   --color-error: #FF4757;
   --color-hover: #F0EFFF;
   --color-muted: #888888;
   --color-border: rgba(255, 255, 255, 0.1);
 
   --font-sans: var(--font-helvetica-neue), "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-mono: var(--font-courier-prime), "Courier Prime", "Courier New", monospace;
+  --font-mono: "Courier New", "Courier", monospace;
 
   --animate-marquee: marquee 30s linear infinite;
   --animate-marquee-reverse: marquee-reverse 30s linear infinite;

@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import AnimatedText from "@/components/ui/AnimatedText";
 import MediaGallery from "@/components/ui/MediaGallery";
 import { projects } from "@/data/projects";
+import { enrichGallery } from "@/data/enrichGallery";
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -39,8 +41,24 @@ export default async function ClientDetailPage({
   const nextProject =
     currentIndex < projects.length - 1 ? projects[currentIndex + 1] : null;
 
+  const enrichedGallery = enrichGallery(project);
+
   return (
     <div className="pt-28 md:pt-36 pb-20 md:pb-32">
+      {/* Back to Work */}
+      <div className="px-6 max-w-7xl mx-auto mb-8">
+        <Link
+          href="/work"
+          className="inline-flex items-center gap-2 font-mono text-sm text-foreground/60 hover:text-success transition-colors group"
+        >
+          <ArrowLeft
+            className="w-4 h-4 group-hover:-translate-x-1 transition-transform"
+            strokeWidth={1.5}
+          />
+          Back to Work
+        </Link>
+      </div>
+
       {/* Hero */}
       <section className="relative aspect-video md:aspect-[21/9] mx-4 md:mx-6 overflow-hidden rounded-sm mb-12 md:mb-16">
         {project.heroMedia.type === "video" ? (
@@ -114,9 +132,9 @@ export default async function ClientDetailPage({
       </section>
 
       {/* Gallery */}
-      {project.gallery.length > 0 && (
+      {enrichedGallery.length > 0 && (
         <section className="px-4 md:px-6 max-w-7xl mx-auto mb-16 md:mb-24">
-          <MediaGallery items={project.gallery} />
+          <MediaGallery items={enrichedGallery} />
         </section>
       )}
 

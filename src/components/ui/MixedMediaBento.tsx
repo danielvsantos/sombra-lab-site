@@ -31,20 +31,30 @@ function getAspectClass(aspectRatio: MediaItem["aspectRatio"]): string {
 }
 
 export default function MixedMediaBento({ items }: MixedMediaBentoProps) {
+  // Identify the middle item index (when there are 3 items in a row, this is index 1)
+  const middleIndex = Math.floor(items.length / 2);
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4 md:px-6">
-      {items.map((item, i) => (
-        <div
-          key={i}
-          className={clsx(getSpanClasses(item.aspectRatio), getAspectClass(item.aspectRatio))}
-        >
-          <ScrollMagnetItem
-            src={item.src}
-            poster={item.poster}
-            className="w-full h-full"
-          />
-        </div>
-      ))}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4 md:px-6 lg:items-start">
+      {items.map((item, i) => {
+        const isMiddle = i === middleIndex && items.length === 3;
+        return (
+          <div
+            key={i}
+            className={clsx(
+              getSpanClasses(item.aspectRatio),
+              getAspectClass(item.aspectRatio),
+              isMiddle && "lg:translate-y-12"
+            )}
+          >
+            <ScrollMagnetItem
+              src={item.src}
+              poster={item.poster}
+              className="w-full h-full"
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }

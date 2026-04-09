@@ -42,7 +42,7 @@ export default function DynamicGrid({ projects }: DynamicGridProps) {
       </div>
 
       {/* Bento Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 auto-rows-auto">
         <AnimatePresence mode="popLayout">
           {filtered.map((project) => (
             <motion.div

@@ -11,6 +11,7 @@ const clients = [
   "POV BEAUTY",
   "BRAVA SUSHI",
   "PAKA",
+  "ELIJAH",
 ];
 
 export default function ClientTicker() {

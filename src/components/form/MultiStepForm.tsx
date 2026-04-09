@@ -27,6 +27,7 @@ const initialData: FormData = {
 };
 
 const serviceOptions = [
+  "Creative Direction",
   "Audiovisual Production",
   "Styling",
   "Social Media Management",
@@ -42,14 +43,14 @@ const inputClasses =
 const selectClasses =
   "w-full bg-background border-b border-border focus:border-accent outline-none py-3 font-mono text-foreground text-base transition-colors appearance-none cursor-pointer";
 
+const totalSteps = 3;
+
 export default function MultiStepForm() {
   const [step, setStep] = useState(0);
   const [data, setData] = useState<FormData>(initialData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const totalSteps = 8;
 
   function updateField<K extends keyof FormData>(key: K, value: FormData[K]) {
     setData((prev) => ({ ...prev, [key]: value }));
@@ -67,20 +68,21 @@ export default function MultiStepForm() {
   function canAdvance(): boolean {
     switch (step) {
       case 0:
-        return data.brandName.trim().length > 0;
+        // Step 1: brand name, contact name, email required; phone optional
+        return (
+          data.brandName.trim().length > 0 &&
+          data.contactName.trim().length > 0 &&
+          /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)
+        );
       case 1:
-        return data.contactName.trim().length > 0;
+        // Step 2: industry, services, budget all required
+        return (
+          data.industry.length > 0 &&
+          data.services.length > 0 &&
+          data.budget.length > 0
+        );
       case 2:
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email);
-      case 3:
-        return true; // phone is optional
-      case 4:
-        return data.industry.length > 0;
-      case 5:
-        return data.services.length > 0;
-      case 6:
-        return data.budget.length > 0;
-      case 7:
+        // Step 3: brief required
         return data.brief.trim().length > 0;
       default:
         return false;
@@ -149,147 +151,177 @@ export default function MultiStepForm() {
     );
   }
 
-  const steps = [
-    {
-      label: "What is your brand's name?",
-      content: (
-        <input
-          type="text"
-          value={data.brandName}
-          onChange={(e) => updateField("brandName", e.target.value)}
-          placeholder="Brand name"
-          className={inputClasses}
-          autoFocus
-        />
-      ),
-    },
-    {
-      label: "What is your role or contact name?",
-      content: (
-        <input
-          type="text"
-          value={data.contactName}
-          onChange={(e) => updateField("contactName", e.target.value)}
-          placeholder="Your name"
-          className={inputClasses}
-          autoFocus
-        />
-      ),
-    },
-    {
-      label: "Where can we email you?",
-      content: (
-        <input
-          type="email"
-          value={data.email}
-          onChange={(e) => updateField("email", e.target.value)}
-          placeholder="email@example.com"
-          className={inputClasses}
-          autoFocus
-        />
-      ),
-    },
-    {
-      label: "What's your phone number? (optional)",
-      content: (
-        <input
-          type="tel"
-          value={data.phone}
-          onChange={(e) => updateField("phone", e.target.value)}
-          placeholder="+34 600 000 000"
-          className={inputClasses}
-          autoFocus
-        />
-      ),
-    },
-    {
-      label: "What industry are you in?",
-      content: (
-        <select
-          value={data.industry}
-          onChange={(e) => updateField("industry", e.target.value)}
-          className={selectClasses}
-        >
-          <option value="" disabled>
-            Select industry
-          </option>
-          {industryOptions.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
-        </select>
-      ),
-    },
-    {
-      label: "What do you need help with?",
-      content: (
-        <div className="flex flex-wrap gap-3">
-          {serviceOptions.map((service) => (
-            <button
-              key={service}
-              onClick={() => toggleService(service)}
-              className={`font-mono text-sm px-5 py-2.5 rounded-full border transition-all min-h-[48px] ${
-                data.services.includes(service)
-                  ? "bg-accent text-foreground border-accent"
-                  : "bg-transparent text-foreground/60 border-border hover:border-hover"
-              }`}
-            >
-              {service}
-            </button>
-          ))}
+  // Step content components
+  const stepLabels = ["About you", "About the project", "The brief"];
+
+  function renderStep() {
+    if (step === 0) {
+      return (
+        <div className="space-y-8">
+          <div>
+            <label className="font-mono text-xs text-foreground/40 uppercase tracking-widest mb-2 block">
+              Brand name
+            </label>
+            <input
+              type="text"
+              value={data.brandName}
+              onChange={(e) => updateField("brandName", e.target.value)}
+              placeholder="Your brand"
+              className={inputClasses}
+              autoFocus
+            />
+          </div>
+          <div>
+            <label className="font-mono text-xs text-foreground/40 uppercase tracking-widest mb-2 block">
+              Your name
+            </label>
+            <input
+              type="text"
+              value={data.contactName}
+              onChange={(e) => updateField("contactName", e.target.value)}
+              placeholder="Contact name or role"
+              className={inputClasses}
+            />
+          </div>
+          <div>
+            <label className="font-mono text-xs text-foreground/40 uppercase tracking-widest mb-2 block">
+              Email
+            </label>
+            <input
+              type="email"
+              value={data.email}
+              onChange={(e) => updateField("email", e.target.value)}
+              placeholder="email@example.com"
+              className={inputClasses}
+            />
+          </div>
+          <div>
+            <label className="font-mono text-xs text-foreground/40 uppercase tracking-widest mb-2 block">
+              Phone <span className="text-foreground/30 normal-case">(optional)</span>
+            </label>
+            <input
+              type="tel"
+              value={data.phone}
+              onChange={(e) => updateField("phone", e.target.value)}
+              placeholder="+34 600 000 000"
+              className={inputClasses}
+            />
+          </div>
         </div>
-      ),
-    },
-    {
-      label: "What is your estimated budget?",
-      content: (
-        <select
-          value={data.budget}
-          onChange={(e) => updateField("budget", e.target.value)}
-          className={selectClasses}
-        >
-          <option value="" disabled>
-            Select budget range
-          </option>
-          {budgetOptions.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
-        </select>
-      ),
-    },
-    {
-      label: "Give us the brief. What are we building?",
-      content: (
+      );
+    }
+
+    if (step === 1) {
+      return (
+        <div className="space-y-10">
+          <div>
+            <label className="font-mono text-xs text-foreground/40 uppercase tracking-widest mb-2 block">
+              Industry
+            </label>
+            <select
+              value={data.industry}
+              onChange={(e) => updateField("industry", e.target.value)}
+              className={selectClasses}
+            >
+              <option value="" disabled>
+                Select industry
+              </option>
+              {industryOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="font-mono text-xs text-foreground/40 uppercase tracking-widest mb-3 block">
+              Services needed
+            </label>
+            <div className="flex flex-wrap gap-3">
+              {serviceOptions.map((service) => (
+                <button
+                  key={service}
+                  type="button"
+                  onClick={() => toggleService(service)}
+                  className={`font-mono text-sm px-5 py-2.5 rounded-full border transition-all min-h-[48px] ${
+                    data.services.includes(service)
+                      ? "bg-accent text-foreground border-accent"
+                      : "bg-transparent text-foreground/60 border-border hover:border-hover"
+                  }`}
+                >
+                  {service}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="font-mono text-xs text-foreground/40 uppercase tracking-widest mb-2 block">
+              Budget
+            </label>
+            <select
+              value={data.budget}
+              onChange={(e) => updateField("budget", e.target.value)}
+              className={selectClasses}
+            >
+              <option value="" disabled>
+                Select budget range
+              </option>
+              {budgetOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      );
+    }
+
+    // Step 2: brief
+    return (
+      <div>
+        <label className="font-mono text-xs text-foreground/40 uppercase tracking-widest mb-2 block">
+          Tell us about your project
+        </label>
         <textarea
           value={data.brief}
           onChange={(e) => updateField("brief", e.target.value)}
-          placeholder="Tell us about your project..."
-          rows={5}
+          placeholder="What are we building? Goals, timeline, references, anything that helps us understand your vision..."
+          rows={8}
           className={`${inputClasses} border rounded-sm p-4 resize-none`}
           autoFocus
         />
-      ),
-    },
-  ];
+      </div>
+    );
+  }
 
   return (
     <div>
       {/* Progress bar */}
-      <div className="flex gap-1.5 mb-12">
+      <div className="flex gap-2 mb-12">
         {Array.from({ length: totalSteps }).map((_, i) => (
-          <div
-            key={i}
-            className="h-1 flex-1 rounded-full overflow-hidden bg-border"
-          >
-            <motion.div
-              className="h-full bg-accent"
-              initial={{ width: "0%" }}
-              animate={{ width: i <= step ? "100%" : "0%" }}
-              transition={{ duration: 0.3 }}
-            />
+          <div key={i} className="flex-1">
+            <div className="h-1 rounded-full overflow-hidden bg-border">
+              <motion.div
+                className="h-full bg-accent"
+                initial={{ width: "0%" }}
+                animate={{ width: i <= step ? "100%" : "0%" }}
+                transition={{ duration: 0.3 }}
+              />
+            </div>
+            <p
+              className={`font-mono text-xs mt-2 transition-colors ${
+                i === step
+                  ? "text-foreground"
+                  : i < step
+                    ? "text-foreground/40"
+                    : "text-foreground/20"
+              }`}
+            >
+              0{i + 1} / {stepLabels[i]}
+            </p>
           </div>
         ))}
       </div>
@@ -303,19 +335,14 @@ export default function MultiStepForm() {
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.3 }}
         >
-          <p className="font-mono text-xs text-foreground/40 mb-2">
-            Step {step + 1} of {totalSteps}
-          </p>
-          <h2 className="font-sans font-medium text-xl md:text-2xl mb-8">
-            {steps[step].label}
-          </h2>
-          {steps[step].content}
+          {renderStep()}
         </motion.div>
       </AnimatePresence>
 
       {/* Navigation */}
-      <div className="flex justify-between items-center mt-10">
+      <div className="flex justify-between items-center mt-12">
         <button
+          type="button"
           onClick={() => setStep(Math.max(0, step - 1))}
           disabled={step === 0}
           className="font-mono text-sm text-foreground/40 hover:text-foreground disabled:opacity-0 transition-all min-h-[48px] px-4"
@@ -324,6 +351,7 @@ export default function MultiStepForm() {
         </button>
 
         <button
+          type="button"
           onClick={handleNext}
           disabled={!canAdvance() || isSubmitting}
           className="font-mono text-sm px-8 py-3 bg-accent text-foreground rounded-full hover:bg-hover hover:text-accent transition-all disabled:opacity-30 disabled:cursor-not-allowed min-h-[48px]"

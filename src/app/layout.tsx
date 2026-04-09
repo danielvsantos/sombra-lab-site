@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import LayoutWrapper from "@/components/layout/LayoutWrapper";
+import CookieBanner from "@/components/layout/CookieBanner";
 import "./globals.css";
 
 const helveticaNeue = localFont({
@@ -59,33 +60,6 @@ const ibmPlexMono = localFont({
   display: "swap",
 });
 
-const courierPrime = localFont({
-  src: [
-    {
-      path: "../fonts/CourierPrime-Regular.ttf",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "../fonts/CourierPrime-Italic.ttf",
-      weight: "400",
-      style: "italic",
-    },
-    {
-      path: "../fonts/CourierPrime-Bold.ttf",
-      weight: "700",
-      style: "normal",
-    },
-    {
-      path: "../fonts/CourierPrime-BoldItalic.ttf",
-      weight: "700",
-      style: "italic",
-    },
-  ],
-  variable: "--font-courier-prime",
-  display: "swap",
-});
-
 export const metadata: Metadata = {
   title: "Sombra Lab | Creative Production Agency",
   description:
@@ -110,12 +84,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${helveticaNeue.variable} ${courierPrime.variable} ${ibmPlexMono.variable}`}
+      className={`${helveticaNeue.variable} ${ibmPlexMono.variable}`}
     >
       <body>
           <Navbar />
           <LayoutWrapper>{children}</LayoutWrapper>
           <Footer />
+          <CookieBanner />
         </body>
     </html>
   );

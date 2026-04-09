@@ -10,6 +10,7 @@ import clsx from "clsx";
 const navLinks = [
   { href: "/work", label: "Work" },
   { href: "/services", label: "Services" },
+  { href: "/about", label: "About" },
   { href: "https://hub.sombralab.com", label: "Portal", external: true },
 ];
 
@@ -56,7 +57,7 @@ export default function Navbar() {
               alt="Sombra Lab"
               width={576}
               height={156}
-              className="h-5 md:h-6 w-auto"
+              className="h-[22px] md:h-[26px] w-auto"
               priority
             />
           </Link>
@@ -114,7 +115,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile overlay */}
+      {/* Mobile overlay - editorial style */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -122,41 +123,91 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-40 bg-background flex flex-col items-center justify-center gap-8"
+            className="fixed inset-0 z-40 bg-background flex flex-col"
           >
-            {navLinks.map((link, i) => (
-              <motion.div
-                key={link.href}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-              >
-                <Link
-                  href={link.href}
-                  onClick={() => setMenuOpen(false)}
-                  className={clsx(
-                    "font-sans text-3xl font-bold tracking-tight",
-                    pathname === link.href
-                      ? "text-success"
-                      : "text-foreground/80"
-                  )}
+            {/* Spacer for navbar */}
+            <div className="h-16 md:h-20" />
+
+            {/* Menu items */}
+            <div className="flex-1 flex flex-col justify-center px-8 pb-12">
+              <p className="font-mono text-xs text-foreground/40 uppercase tracking-widest mb-8">
+                Menu
+              </p>
+              <nav className="flex flex-col gap-5">
+                {navLinks.map((link, i) => (
+                  <motion.div
+                    key={link.href}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.08, duration: 0.4 }}
+                    className="flex items-baseline gap-5"
+                  >
+                    <span className="font-mono text-xs text-foreground/30 tabular-nums">
+                      0{i + 1}
+                    </span>
+                    <Link
+                      href={link.href}
+                      onClick={() => setMenuOpen(false)}
+                      className={clsx(
+                        "font-mono text-2xl tracking-tight transition-colors",
+                        pathname === link.href
+                          ? "text-success"
+                          : "text-foreground hover:text-success"
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  </motion.div>
+                ))}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: navLinks.length * 0.08, duration: 0.4 }}
+                  className="flex items-baseline gap-5"
                 >
-                  {link.label}
-                </Link>
-              </motion.div>
-            ))}
+                  <span className="font-mono text-xs text-foreground/30 tabular-nums">
+                    0{navLinks.length + 1}
+                  </span>
+                  <Link
+                    href="/start"
+                    onClick={() => setMenuOpen(false)}
+                    className={clsx(
+                      "font-mono text-2xl tracking-tight transition-colors",
+                      pathname === "/start"
+                        ? "text-success"
+                        : "text-foreground hover:text-success"
+                    )}
+                  >
+                    Start a Project
+                  </Link>
+                </motion.div>
+              </nav>
+            </div>
+
+            {/* Footer */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: navLinks.length * 0.1 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.4 }}
+              className="px-8 pb-10 pt-6 border-t border-border"
             >
-              <Link
-                href="/start"
-                onClick={() => setMenuOpen(false)}
-                className="font-sans text-3xl font-bold tracking-tight bg-accent px-8 py-3 rounded-full"
+              <p className="font-mono text-xs text-foreground/40 uppercase tracking-widest mb-3">
+                Get in touch
+              </p>
+              <a
+                href="mailto:patricia@sombralab.com"
+                className="font-mono text-sm text-foreground hover:text-success transition-colors block mb-2"
               >
-                Start a Project
-              </Link>
+                patricia@sombralab.com
+              </a>
+              <a
+                href="https://www.instagram.com/sombra_lab"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-sm text-foreground/60 hover:text-foreground transition-colors"
+              >
+                Instagram &rarr;
+              </a>
             </motion.div>
           </motion.div>
         )}

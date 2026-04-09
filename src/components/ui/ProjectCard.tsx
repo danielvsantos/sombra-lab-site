@@ -59,20 +59,12 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           />
         )}
 
-        {/* Hover overlay - hidden on mobile */}
-        <div className="absolute inset-0 bg-background/60 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-          <p className="font-mono text-xs uppercase tracking-widest text-success mb-2">
+        {/* Always-visible label gradient */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-gradient-to-t from-background/90 via-background/40 to-transparent pointer-events-none">
+          <p className="font-mono text-xs uppercase tracking-widest text-success mb-1 md:mb-2">
             {project.category}
           </p>
-          <h3 className="font-sans text-2xl">{project.title}</h3>
-        </div>
-
-        {/* Mobile: always-visible label */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background/80 to-transparent md:hidden">
-          <p className="font-mono text-xs uppercase tracking-widest text-success mb-1">
-            {project.category}
-          </p>
-          <h3 className="font-sans text-lg">{project.title}</h3>
+          <h3 className="font-sans text-lg md:text-2xl">{project.title}</h3>
         </div>
       </motion.div>
     </Link>

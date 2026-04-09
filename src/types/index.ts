@@ -9,7 +9,7 @@ export interface Project {
   coverVideo?: string;
   coverAspect: "vertical" | "horizontal";
   heroMedia: { type: "image" | "video"; src: string; poster?: string };
-  gallery: { type: "image" | "video"; src: string; poster?: string; alt?: string }[];
+  gallery: { type: "image" | "video"; src: string; poster?: string; alt?: string; aspectRatio?: "vertical" | "horizontal" | "square" }[];
   featured: boolean;
 }
 
@@ -22,6 +22,7 @@ export interface MediaItem {
 export interface Service {
   title: string;
   description: string;
+  icon: "lightbulb" | "camera" | "shirt" | "trending-up";
 }
 
 export type FilterCategory = "all" | "gastronomy" | "beauty" | "fashion";

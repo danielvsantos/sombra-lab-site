@@ -50,6 +50,12 @@ export default function Footer() {
                 Services
               </Link>
               <Link
+                href="/about"
+                className="font-mono text-sm text-foreground/60 hover:text-foreground transition-colors"
+              >
+                About
+              </Link>
+              <Link
                 href="/start"
                 className="font-mono text-sm text-foreground/60 hover:text-foreground transition-colors"
               >
