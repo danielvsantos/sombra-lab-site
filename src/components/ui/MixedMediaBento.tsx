@@ -38,13 +38,15 @@ export default function MixedMediaBento({ items }: MixedMediaBentoProps) {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4 md:px-6 lg:items-start">
       {items.map((item, i) => {
         const isMiddle = i === middleIndex && items.length === 3;
+        const isSide = !isMiddle && items.length === 3;
         return (
           <div
             key={i}
             className={clsx(
               getSpanClasses(item.aspectRatio),
               getAspectClass(item.aspectRatio),
-              isMiddle && "lg:translate-y-12"
+              isMiddle && "lg:translate-y-16",
+              isSide && "lg:-translate-y-8"
             )}
           >
             <ScrollMagnetItem

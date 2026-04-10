@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 
@@ -15,12 +15,15 @@ export default function VideoLightbox({
   poster,
   onClose,
 }: VideoLightboxProps) {
-  // Lock body scroll when open
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const stableOnClose = useCallback(() => onClose(), [onClose]);
+
   useEffect(() => {
     if (src) {
       document.body.style.overflow = "hidden";
       const handleEscape = (e: KeyboardEvent) => {
-        if (e.key === "Escape") onClose();
+        if (e.key === "Escape") stableOnClose();
       };
       window.addEventListener("keydown", handleEscape);
       return () => {
@@ -28,7 +31,22 @@ export default function VideoLightbox({
         window.removeEventListener("keydown", handleEscape);
       };
     }
-  }, [src, onClose]);
+  }, [src, stableOnClose]);
+
+  // When the video element mounts with a new src, try to play with audio
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !src) return;
+
+    // Try playing with audio first (works because user just clicked)
+    video.muted = false;
+    video.currentTime = 0;
+    video.play().catch(() => {
+      // If autoplay with audio fails, start muted then unmute via controls
+      video.muted = true;
+      video.play().catch(() => {});
+    });
+  }, [src]);
 
   return (
     <AnimatePresence>
@@ -39,11 +57,11 @@ export default function VideoLightbox({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
           className="fixed inset-0 z-[100] bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
-          onClick={onClose}
+          onClick={stableOnClose}
         >
           {/* Close button */}
           <button
-            onClick={onClose}
+            onClick={stableOnClose}
             className="absolute top-6 right-6 z-10 w-12 h-12 flex items-center justify-center rounded-full border border-border hover:border-hover transition-colors"
             aria-label="Close video"
           >
@@ -60,9 +78,10 @@ export default function VideoLightbox({
             onClick={(e) => e.stopPropagation()}
           >
             <video
+              ref={videoRef}
+              key={src}
               src={src}
               poster={poster}
-              autoPlay
               controls
               playsInline
               className="max-w-full max-h-[85vh] rounded-sm"

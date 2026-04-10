@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -52,13 +51,11 @@ export default function Navbar() {
             href="/"
             onClick={() => setMenuOpen(false)}
           >
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src="/logo.png"
               alt="Sombra Lab"
-              width={576}
-              height={156}
-              className="h-[22px] md:h-[26px] w-auto"
-              priority
+              className="h-[25px] md:h-[30px] w-auto"
             />
           </Link>
 

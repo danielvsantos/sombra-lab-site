@@ -91,7 +91,9 @@ export default function Footer() {
                   Instagram
                 </a>
                 <a
-                  href="#"
+                  href="https://www.linkedin.com/company/sombra-lab/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="font-mono text-sm text-foreground/60 hover:text-foreground transition-colors"
                 >
                   LinkedIn

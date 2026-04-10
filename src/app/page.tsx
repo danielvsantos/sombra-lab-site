@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import AnimatedText from "@/components/ui/AnimatedText";
 import MixedMediaBento from "@/components/ui/MixedMediaBento";
 import ClientTicker from "@/components/ui/ClientTicker";
@@ -48,25 +49,40 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* Desktop: compact hero with bento peeking up from below */}
+        {/* Desktop: two-column hero (logo left, text right) with bento below */}
         <div className="relative hidden md:block">
-          <div className="text-center px-6 pt-32 pb-12 lg:pt-36 lg:pb-16">
-            <h1
-              className="font-sans font-medium md:text-4xl lg:text-5xl xl:text-6xl leading-tight"
-            >
-              We bring striking visions
-              <br />
-              out of the shadows.
-            </h1>
-            <p className="font-mono text-foreground/70 mt-5 text-sm lg:text-base">
-              Concept, production, and growth for upscale brands.
-            </p>
-            <Link
-              href="/work"
-              className="inline-block mt-7 font-mono text-sm px-8 py-3 bg-accent text-foreground rounded-full hover:bg-hover hover:text-accent transition-all"
-            >
-              Enter the Lab
-            </Link>
+          <div className="px-6 lg:px-12 pt-32 pb-10 lg:pt-36 lg:pb-14 max-w-7xl mx-auto">
+            <div className="grid grid-cols-12 gap-8 items-center">
+              {/* Logo — left column, vertically centered with text */}
+              <div className="col-span-5 lg:col-span-4 flex items-center justify-start">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/logo.png"
+                  alt="Sombra Lab"
+                  className="w-full max-w-[260px] lg:max-w-[300px] h-auto"
+                />
+              </div>
+              {/* Text — right column */}
+              <div className="col-span-7 lg:col-span-8">
+                <h1 className="font-sans font-medium text-3xl lg:text-4xl xl:text-5xl leading-tight">
+                  We bring striking visions
+                  <br />
+                  out of the shadows.
+                </h1>
+                <p className="font-mono text-foreground/70 mt-4 text-sm lg:text-base">
+                  Concept, production, and growth for upscale brands.
+                </p>
+              </div>
+            </div>
+            {/* CTA — centered below both columns */}
+            <div className="text-center mt-10">
+              <Link
+                href="/work"
+                className="inline-block font-mono text-sm px-8 py-3 bg-accent text-foreground rounded-full hover:bg-hover hover:text-accent transition-all"
+              >
+                Enter the Lab
+              </Link>
+            </div>
           </div>
 
           <MixedMediaBento items={bentoItems} />

@@ -43,8 +43,8 @@ export default function AboutPage() {
                 >
                   {/* Photo */}
                   {founder.photo && (
-                    <div className="md:col-span-5 md:[direction:ltr]">
-                      <div className="relative aspect-[3/4] overflow-hidden rounded-sm bg-foreground/5">
+                    <div className="md:col-span-4 md:[direction:ltr]">
+                      <div className="relative aspect-[3/4] max-w-[320px] overflow-hidden rounded-sm bg-foreground/5">
                         <Image
                           src={founder.photo}
                           alt={founder.name}
@@ -57,7 +57,7 @@ export default function AboutPage() {
                   )}
 
                   {/* Bio */}
-                  <div className="md:col-span-7 md:[direction:ltr] md:px-4 lg:px-8">
+                  <div className="md:col-span-8 md:[direction:ltr] md:px-4 lg:px-8">
                     <p className="font-mono text-xs uppercase tracking-widest text-success mb-3">
                       {founder.role}
                     </p>
@@ -76,8 +76,11 @@ export default function AboutPage() {
 
         {/* Collaborators */}
         {collaborators.length > 0 && (
-          <section className="mb-24 md:mb-32 border-t border-border pt-16 md:pt-24">
-            <h2 className="font-mono text-xs uppercase tracking-widest text-foreground/40 mb-12">
+          <section className="mb-24 md:mb-32 border-t-2 border-accent/30 pt-20 md:pt-28">
+            <p className="font-mono text-xs uppercase tracking-widest text-foreground/40 mb-2">
+              Our extended team
+            </p>
+            <h2 className="font-sans font-medium text-2xl md:text-3xl mb-14">
               Collaborators
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

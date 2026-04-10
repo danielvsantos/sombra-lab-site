@@ -12,7 +12,7 @@ export const projects: Project[] = [
     thumbnail: "/assets/clients/abac/thumbnail.jpg",
     coverVideo: "/assets/clients/abac/thumbnail.mp4",
     coverAspect: "vertical",
-    heroMedia: { type: "image", src: "/assets/clients/abac/hero.jpg" },
+    heroMedia: { type: "video", src: "/assets/clients/abac/hero.mp4", poster: "/assets/clients/abac/hero-poster.jpg" },
     gallery: [
       { type: "image", src: "/assets/clients/abac/gallery-1.jpg" },
       { type: "video", src: "/assets/clients/abac/gallery-1.mp4", poster: "/assets/clients/abac/gallery-1-poster.jpg" },
@@ -37,7 +37,7 @@ export const projects: Project[] = [
     thumbnail: "/assets/clients/atempo/thumbnail.jpg",
     coverVideo: "/assets/clients/atempo/thumbnail.mp4",
     coverAspect: "vertical",
-    heroMedia: { type: "image", src: "/assets/clients/atempo/hero.jpg" },
+    heroMedia: { type: "video", src: "/assets/clients/atempo/hero.mp4", poster: "/assets/clients/atempo/hero-poster.jpg" },
     gallery: [
       { type: "image", src: "/assets/clients/atempo/gallery-1.jpg" },
       { type: "image", src: "/assets/clients/atempo/gallery-2.jpg" },
@@ -61,7 +61,7 @@ export const projects: Project[] = [
     instagram: "@anglebarcelona",
     thumbnail: "/assets/clients/angle/thumbnail.jpg",
     coverAspect: "vertical",
-    heroMedia: { type: "image", src: "/assets/clients/angle/hero.jpg" },
+    heroMedia: { type: "video", src: "/assets/clients/angle/hero.mp4", poster: "/assets/clients/angle/hero-poster.jpg" },
     gallery: [
       { type: "image", src: "/assets/clients/angle/gallery-1.jpg" },
       { type: "image", src: "/assets/clients/angle/gallery-2.jpg" },
@@ -111,7 +111,7 @@ export const projects: Project[] = [
     thumbnail: "/assets/clients/buriti/thumbnail.jpg",
     coverVideo: "/assets/clients/buriti/thumbnail.mp4",
     coverAspect: "horizontal",
-    heroMedia: { type: "image", src: "/assets/clients/buriti/hero.jpg" },
+    heroMedia: { type: "video", src: "/assets/clients/buriti/hero.mp4", poster: "/assets/clients/buriti/hero-poster.jpg" },
     gallery: [
       { type: "image", src: "/assets/clients/buriti/gallery-1.jpg" },
       { type: "image", src: "/assets/clients/buriti/gallery-2.jpg" },
@@ -136,7 +136,7 @@ export const projects: Project[] = [
     instagram: "@pingaboteco",
     thumbnail: "/assets/clients/pinga/thumbnail.jpg",
     coverAspect: "vertical",
-    heroMedia: { type: "image", src: "/assets/clients/pinga/hero.jpg" },
+    heroMedia: { type: "video", src: "/assets/clients/pinga/hero.mp4", poster: "/assets/clients/pinga/hero-poster.jpg" },
     gallery: [
       { type: "image", src: "/assets/clients/pinga/gallery-1.jpg" },
       { type: "image", src: "/assets/clients/pinga/gallery-2.jpg" },
@@ -169,7 +169,7 @@ export const projects: Project[] = [
     thumbnail: "/assets/clients/manta/thumbnail.jpg",
     coverVideo: "/assets/clients/manta/thumbnail.mp4",
     coverAspect: "horizontal",
-    heroMedia: { type: "image", src: "/assets/clients/manta/hero.jpg" },
+    heroMedia: { type: "video", src: "/assets/clients/manta/hero.mp4", poster: "/assets/clients/manta/hero-poster.jpg" },
     gallery: [
       { type: "image", src: "/assets/clients/manta/gallery-1.jpg" },
       { type: "image", src: "/assets/clients/manta/gallery-2.jpg" },
