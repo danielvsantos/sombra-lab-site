@@ -136,7 +136,7 @@ export const projects: Project[] = [
     instagram: "@pingaboteco",
     thumbnail: "/assets/clients/pinga/thumbnail.jpg",
     coverAspect: "vertical",
-    heroMedia: { type: "video", src: "/assets/clients/pinga/hero.mp4", poster: "/assets/clients/pinga/hero-poster.jpg" },
+    heroMedia: { type: "image", src: "/assets/clients/pinga/hero.jpg" },
     gallery: [
       { type: "image", src: "/assets/clients/pinga/gallery-1.jpg" },
       { type: "image", src: "/assets/clients/pinga/gallery-2.jpg" },
