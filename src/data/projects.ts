@@ -222,7 +222,7 @@ export const projects: Project[] = [
     category: "beauty",
     services: ["Audiovisual Production", "Social Media Strategy"],
     brief:
-      "Driving the visual narrative for Mikayla Nogueira's explosive skincare launch. We produced high-potency, loud, and educational digital assets that helped generate a $1 million sell-out in just 7 minutes.",
+      "POV Beauty is a unique skincare brand founded by Mikayla Nogueira. At Sombra, we specialize in producing highly engaging, on-brand UGC and bespoke product content to drive their social media campaigns.",
     instagram: "@povbeauty",
     thumbnail: "/assets/clients/pov-beauty/thumbnail.jpg",
     coverAspect: "vertical",
