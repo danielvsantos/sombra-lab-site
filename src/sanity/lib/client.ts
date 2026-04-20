@@ -6,7 +6,8 @@ export const apiVersion = "2024-10-01";
 
 /**
  * Read-only client for fetching content in pages.
- * Uses CDN for speed + caching.
+ * Uses CDN for speed + caching. No auth needed — the Sanity dataset is
+ * configured as public so anonymous reads are allowed.
  */
 export const sanityClient = createClient({
   projectId,
@@ -14,16 +15,4 @@ export const sanityClient = createClient({
   apiVersion,
   useCdn: true,
   perspective: "published",
-});
-
-/**
- * Write-enabled client for migration scripts / admin tasks.
- * Uses the API token from env (never exposed to browser).
- */
-export const sanityWriteClient = createClient({
-  projectId,
-  dataset,
-  apiVersion,
-  token: process.env.SANITY_API_TOKEN,
-  useCdn: false,
 });
