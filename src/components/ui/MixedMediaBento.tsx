@@ -42,21 +42,10 @@ function getAspectClass(aspectRatio: BentoItem["aspectRatio"]): string {
  * Scroll-magnet item: plays when the center band of the viewport intersects
  * it; pauses otherwise. Dims + scales down when inactive.
  */
-function BentoItemCard({
-  item,
-  isMiddle,
-  isSide,
-}: {
-  item: BentoItem;
-  isMiddle: boolean;
-  isSide: boolean;
-}) {
+function BentoItemCard({ item }: { item: BentoItem }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<MuxBackgroundVideoRef>(null);
   const prefersReducedMotion = useReducedMotion();
-  // Center band of viewport: videos within this band are "active" (full
-  // opacity + playing). Looser margin than a pure center-lock so that items
-  // in the initial above-the-fold viewport read as active immediately.
   const isActive = useInView(containerRef, {
     margin: "-15% 0px -15% 0px",
   });
@@ -73,8 +62,6 @@ function BentoItemCard({
         "relative overflow-hidden rounded-sm",
         getSpanClasses(item.aspectRatio),
         getAspectClass(item.aspectRatio),
-        isMiddle && "lg:translate-y-16",
-        isSide && "lg:-translate-y-8",
       )}
       animate={
         prefersReducedMotion
@@ -95,22 +82,11 @@ function BentoItemCard({
 }
 
 export default function MixedMediaBento({ items }: MixedMediaBentoProps) {
-  const middleIndex = Math.floor(items.length / 2);
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4 md:px-6 lg:items-start">
-      {items.map((item, i) => {
-        const isMiddle = i === middleIndex && items.length === 3;
-        const isSide = !isMiddle && items.length === 3;
-        return (
-          <BentoItemCard
-            key={i}
-            item={item}
-            isMiddle={isMiddle}
-            isSide={isSide}
-          />
-        );
-      })}
+      {items.map((item, i) => (
+        <BentoItemCard key={i} item={item} />
+      ))}
     </div>
   );
 }
