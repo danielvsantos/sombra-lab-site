@@ -33,8 +33,12 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
-# raw assets (large source files before conversion, not for git)
+# raw assets — optional local cache of source files; content of record
+# lives in Sanity + Mux now. Kept out of git to avoid a 7.8 GB repo.
 /raw/
+
+# Sanity Studio build output
+/dist/
 
 # vercel
 .vercel

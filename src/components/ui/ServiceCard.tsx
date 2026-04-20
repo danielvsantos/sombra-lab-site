@@ -2,12 +2,13 @@
 
 import { motion } from "framer-motion";
 import { Lightbulb, Camera, Shirt, TrendingUp } from "lucide-react";
-import { Service } from "@/types";
+
+type ServiceIcon = "lightbulb" | "camera" | "shirt" | "trending-up";
 
 interface ServiceCardProps {
   title: string;
   description: string;
-  icon: Service["icon"];
+  icon: ServiceIcon;
   index: number;
 }
 

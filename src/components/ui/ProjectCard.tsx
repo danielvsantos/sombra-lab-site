@@ -4,31 +4,31 @@ import { useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
-import { Project } from "@/types";
+import type { SanityProject } from "@/sanity/lib/types";
+import { resolveProjectCover } from "@/sanity/lib/resolve";
+import MuxBackgroundVideo, {
+  type MuxBackgroundVideoRef,
+} from "./MuxBackgroundVideo";
 
 interface ProjectCardProps {
-  project: Project;
+  project: SanityProject;
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<MuxBackgroundVideoRef>(null);
   const isInView = useInView(containerRef, { margin: "-20% 0px" });
 
+  const cover = resolveProjectCover(project);
+
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (isInView) {
-      video.play().catch(() => {});
-    } else {
-      video.pause();
-    }
-  }, [isInView]);
+    if (!cover.video) return;
+    if (isInView) videoRef.current?.play();
+    else videoRef.current?.pause();
+  }, [isInView, cover.video]);
 
   const aspectClass =
-    project.coverAspect === "horizontal"
-      ? "aspect-video"
-      : "aspect-[3/4]";
+    project.coverAspect === "horizontal" ? "aspect-video" : "aspect-[3/4]";
 
   return (
     <Link href={`/work/${project.slug}`} className="block w-full">
@@ -38,26 +38,23 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         whileHover={{ scale: 0.98 }}
         transition={{ duration: 0.3 }}
       >
-        {project.coverVideo ? (
-          <video
+        {cover.video ? (
+          <MuxBackgroundVideo
             ref={videoRef}
-            src={project.coverVideo}
-            poster={project.thumbnail}
-            muted
-            loop
-            playsInline
-            preload="none"
-            className="w-full h-full object-cover"
+            playbackId={cover.video}
+            className="w-full h-full"
           />
-        ) : (
+        ) : cover.image ? (
           <Image
-            src={project.thumbnail}
+            src={cover.image}
             alt={project.title}
             fill
+            placeholder={cover.lqip ? "blur" : "empty"}
+            blurDataURL={cover.lqip}
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
-        )}
+        ) : null}
 
         {/* Always-visible label gradient */}
         <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-gradient-to-t from-background/90 via-background/40 to-transparent pointer-events-none">

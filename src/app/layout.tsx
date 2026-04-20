@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import LayoutWrapper from "@/components/layout/LayoutWrapper";
-import CookieBanner from "@/components/layout/CookieBanner";
+import SiteChrome from "@/components/layout/SiteChrome";
 import "./globals.css";
 
 const helveticaNeue = localFont({
@@ -85,13 +82,11 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${helveticaNeue.variable} ${ibmPlexMono.variable}`}
+      data-scroll-behavior="smooth"
     >
       <body>
-          <Navbar />
-          <LayoutWrapper>{children}</LayoutWrapper>
-          <Footer />
-          <CookieBanner />
-        </body>
+        <SiteChrome>{children}</SiteChrome>
+      </body>
     </html>
   );
 }

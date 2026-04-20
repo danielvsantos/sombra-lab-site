@@ -1,37 +1,47 @@
 import Link from "next/link";
-import Image from "next/image";
 import AnimatedText from "@/components/ui/AnimatedText";
-import MixedMediaBento from "@/components/ui/MixedMediaBento";
+import MixedMediaBento, {
+  type BentoItem,
+} from "@/components/ui/MixedMediaBento";
 import ClientTicker from "@/components/ui/ClientTicker";
 import ProjectCard from "@/components/ui/ProjectCard";
-import { projects } from "@/data/projects";
-import { MediaItem } from "@/types";
+import { sanityClient } from "@/sanity/lib/client";
+import {
+  allProjectsQuery,
+  homepageMediaQuery,
+} from "@/sanity/lib/queries";
+import type {
+  SanityProject,
+  SanityHomepageMedia,
+} from "@/sanity/lib/types";
+import { muxPlaybackId } from "@/sanity/lib/resolve";
 
-// Placeholder bento items — replace with real video paths from public/assets/homepage/
-const bentoItems: MediaItem[] = [
-  { src: "/assets/homepage/reel-1.mp4", poster: "/assets/homepage/reel-1-poster.jpg", aspectRatio: "9:16" },
-  { src: "/assets/homepage/reel-2.mp4", poster: "/assets/homepage/reel-2-poster.jpg", aspectRatio: "9:16" },
-  { src: "/assets/homepage/reel-3.mp4", poster: "/assets/homepage/reel-3-poster.jpg", aspectRatio: "9:16" },
-];
+export const revalidate = 60;
 
-// Manually order featured projects to interleave video covers and image covers
-// for visual balance (avoid clustering all photos on one side)
-const featuredOrder = [
-  "abac",          // video (vertical)
-  "angle",         // image (vertical)
-  "atempo",        // video (vertical)
-  "pov-beauty",    // image (vertical)
-  "brava-sushi",   // video (vertical)
-  "nooda-organics",// video (vertical)
-];
-const featuredProjects = featuredOrder
-  .map((slug) => projects.find((p) => p.slug === slug))
-  .filter((p): p is NonNullable<typeof p> => p !== undefined);
+// Featured work is rendered in the order Patricia sets in Studio (via the
+// `order` field), but only items with `featured: true` appear here.
+// If she wants a specific visual rhythm (photo/video interleaving), she
+// adjusts order values in Studio.
 
-export default function Home() {
+export default async function Home() {
+  const [projects, homepageMedia] = await Promise.all([
+    sanityClient.fetch<SanityProject[]>(allProjectsQuery),
+    sanityClient.fetch<SanityHomepageMedia | null>(homepageMediaQuery),
+  ]);
+
+  const featuredProjects = projects.filter((p) => p.featured);
+
+  const bentoItems: BentoItem[] = (homepageMedia?.videos ?? [])
+    .map((v) => {
+      const playbackId = muxPlaybackId(v.video);
+      if (!playbackId) return null;
+      return { playbackId, aspectRatio: v.aspectRatio };
+    })
+    .filter((v): v is BentoItem => v !== null);
+
   return (
     <>
-      {/* Hero: Bento Grid with Sticky Overlay */}
+      {/* Hero: Bento Grid */}
       <section className="relative">
         {/* Mobile: static hero text */}
         <div className="px-6 pt-28 pb-6 md:hidden">
@@ -53,7 +63,6 @@ export default function Home() {
         <div className="relative hidden md:block">
           <div className="px-6 lg:px-12 pt-32 pb-10 lg:pt-36 lg:pb-14 max-w-7xl mx-auto">
             <div className="grid grid-cols-12 gap-8 items-center">
-              {/* Logo — left column, vertically centered with text */}
               <div className="col-span-5 lg:col-span-4 flex items-center justify-start">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -62,7 +71,6 @@ export default function Home() {
                   className="w-full max-w-[260px] lg:max-w-[300px] h-auto"
                 />
               </div>
-              {/* Text — right column */}
               <div className="col-span-7 lg:col-span-8">
                 <h1 className="font-sans font-medium text-3xl lg:text-4xl xl:text-5xl leading-tight">
                   We bring striking visions
@@ -74,7 +82,6 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            {/* CTA — centered below both columns */}
             <div className="text-center mt-10">
               <Link
                 href="/work"
@@ -85,12 +92,12 @@ export default function Home() {
             </div>
           </div>
 
-          <MixedMediaBento items={bentoItems} />
+          {bentoItems.length > 0 && <MixedMediaBento items={bentoItems} />}
         </div>
 
-        {/* Mobile bento grid (no sticky overlay) */}
+        {/* Mobile bento grid */}
         <div className="md:hidden">
-          <MixedMediaBento items={bentoItems} />
+          {bentoItems.length > 0 && <MixedMediaBento items={bentoItems} />}
         </div>
       </section>
 
@@ -107,26 +114,28 @@ export default function Home() {
       </section>
 
       {/* Featured Work */}
-      <section className="px-6 pb-20 md:pb-32">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-12">
-            <h2 className="font-sans font-medium text-2xl md:text-3xl">
-              Featured Work
-            </h2>
-            <Link
-              href="/work"
-              className="font-mono text-sm text-foreground/60 hover:text-foreground transition-colors"
-            >
-              View All Work &rarr;
-            </Link>
+      {featuredProjects.length > 0 && (
+        <section className="px-6 pb-20 md:pb-32">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center justify-between mb-12">
+              <h2 className="font-sans font-medium text-2xl md:text-3xl">
+                Featured Work
+              </h2>
+              <Link
+                href="/work"
+                className="font-mono text-sm text-foreground/60 hover:text-foreground transition-colors"
+              >
+                View All Work &rarr;
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {featuredProjects.map((project) => (
+                <ProjectCard key={project._id} project={project} />
+              ))}
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredProjects.map((project) => (
-              <ProjectCard key={project.slug} project={project} />
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Bottom CTA */}
       <section className="px-6 py-20 md:py-32 text-center border-t border-border">

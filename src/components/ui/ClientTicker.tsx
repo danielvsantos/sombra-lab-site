@@ -1,20 +1,21 @@
-"use client";
+import { sanityClient } from "@/sanity/lib/client";
+import { groq } from "next-sanity";
 
-const clients = [
-  "ABAC",
-  "ATEMPO",
-  "NOODA ORGANICS",
-  "ANGLE",
-  "BURITI",
-  "PINGA",
-  "MANTA",
-  "POV BEAUTY",
-  "BRAVA SUSHI",
-  "PAKA",
-  "ELIJAH",
-];
+// Fetch just the titles in display order — lightweight
+const tickerTitlesQuery = groq`
+  *[_type == "project"] | order(order asc, title asc) {
+    "title": upper(title)
+  }
+`;
 
-export default function ClientTicker() {
+export const revalidate = 60;
+
+export default async function ClientTicker() {
+  const rows = await sanityClient.fetch<{ title: string }[]>(tickerTitlesQuery);
+  const clients = rows.map((r) => r.title).filter(Boolean);
+
+  if (clients.length === 0) return null;
+
   const tickerContent = clients.map((c) => `${c} \u2022`).join(" ");
 
   return (

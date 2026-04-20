@@ -4,27 +4,46 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import AnimatedText from "@/components/ui/AnimatedText";
-import MediaGallery from "@/components/ui/MediaGallery";
-import { projects } from "@/data/projects";
-import { enrichGallery } from "@/data/enrichGallery";
+import MediaGallery, {
+  type GalleryItem,
+} from "@/components/ui/MediaGallery";
+import MuxBackgroundVideo from "@/components/ui/MuxBackgroundVideo";
+import { sanityClient } from "@/sanity/lib/client";
+import {
+  allSlugsQuery,
+  allProjectsQuery,
+  projectBySlugQuery,
+} from "@/sanity/lib/queries";
+import type { SanityProject } from "@/sanity/lib/types";
+import {
+  resolveGalleryItems,
+  resolveProjectHero,
+  muxPosterUrl,
+} from "@/sanity/lib/resolve";
+import { heroImageUrl } from "@/sanity/lib/image";
 
-export function generateStaticParams() {
-  return projects.map((p) => ({ slug: p.slug }));
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const slugs = await sanityClient.fetch<{ slug: string }[]>(allSlugsQuery);
+  return slugs.map((s) => ({ slug: s.slug }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  return params.then(({ slug }) => {
-    const project = projects.find((p) => p.slug === slug);
-    if (!project) return { title: "Not Found" };
-    return {
-      title: `${project.title} | Sombra Lab`,
-      description: project.brief,
-    };
-  });
+  const { slug } = await params;
+  const project = await sanityClient.fetch<SanityProject | null>(
+    projectBySlugQuery,
+    { slug },
+  );
+  if (!project) return { title: "Not Found" };
+  return {
+    title: `${project.title} | Sombra Lab`,
+    description: project.brief,
+  };
 }
 
 export default async function ClientDetailPage({
@@ -33,15 +52,21 @@ export default async function ClientDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
+  const [project, allProjects] = await Promise.all([
+    sanityClient.fetch<SanityProject | null>(projectBySlugQuery, { slug }),
+    sanityClient.fetch<SanityProject[]>(allProjectsQuery),
+  ]);
   if (!project) notFound();
 
-  const currentIndex = projects.findIndex((p) => p.slug === slug);
-  const prevProject = currentIndex > 0 ? projects[currentIndex - 1] : null;
+  const currentIndex = allProjects.findIndex((p) => p.slug === slug);
+  const prevProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
   const nextProject =
-    currentIndex < projects.length - 1 ? projects[currentIndex + 1] : null;
+    currentIndex < allProjects.length - 1
+      ? allProjects[currentIndex + 1]
+      : null;
 
-  const enrichedGallery = enrichGallery(project);
+  const hero = resolveProjectHero(project);
+  const galleryItems: GalleryItem[] = resolveGalleryItems(project);
 
   return (
     <div className="pt-28 md:pt-36 pb-20 md:pb-32">
@@ -61,27 +86,22 @@ export default async function ClientDetailPage({
 
       {/* Hero */}
       <section className="relative aspect-video md:aspect-[21/9] mx-4 md:mx-6 overflow-hidden rounded-sm mb-12 md:mb-16">
-        {project.heroMedia.type === "video" ? (
-          <video
-            src={project.heroMedia.src}
-            poster={project.heroMedia.poster}
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover"
+        {hero.kind === "video" ? (
+          <MuxBackgroundVideo
+            playbackId={hero.src}
+            className="w-full h-full"
           />
-        ) : (
+        ) : hero.src ? (
           <Image
-            src={project.heroMedia.src}
+            src={hero.src}
             alt={project.title}
             fill
             className="object-cover"
             sizes="100vw"
             priority
           />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
+        ) : null}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent pointer-events-none" />
       </section>
 
       {/* Info bar */}
@@ -90,7 +110,7 @@ export default async function ClientDetailPage({
           <span className="font-mono text-xs uppercase tracking-widest text-success bg-success/10 px-3 py-1 rounded-full">
             {project.category}
           </span>
-          {project.services.map((service) => (
+          {project.services?.map((service) => (
             <span
               key={service}
               className="font-mono text-xs text-foreground/50 border border-border px-3 py-1 rounded-full"
@@ -115,26 +135,28 @@ export default async function ClientDetailPage({
               {project.brief}
             </p>
           </div>
-          <div>
-            <h2 className="font-sans font-medium text-sm uppercase tracking-wider text-foreground/40 mb-3">
-              Follow
-            </h2>
-            <a
-              href={`https://instagram.com/${project.instagram.replace("@", "")}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-mono text-success hover:text-success/80 transition-colors"
-            >
-              {project.instagram}
-            </a>
-          </div>
+          {project.instagram && (
+            <div>
+              <h2 className="font-sans font-medium text-sm uppercase tracking-wider text-foreground/40 mb-3">
+                Follow
+              </h2>
+              <a
+                href={`https://instagram.com/${project.instagram.replace("@", "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-success hover:text-success/80 transition-colors"
+              >
+                {project.instagram}
+              </a>
+            </div>
+          )}
         </div>
       </section>
 
       {/* Gallery */}
-      {enrichedGallery.length > 0 && (
+      {galleryItems.length > 0 && (
         <section className="px-4 md:px-6 max-w-7xl mx-auto mb-16 md:mb-24">
-          <MediaGallery items={enrichedGallery} />
+          <MediaGallery items={galleryItems} />
         </section>
       )}
 
@@ -142,10 +164,7 @@ export default async function ClientDetailPage({
       <section className="px-6 max-w-5xl mx-auto border-t border-border pt-12">
         <div className="flex justify-between items-center">
           {prevProject ? (
-            <Link
-              href={`/work/${prevProject.slug}`}
-              className="group"
-            >
+            <Link href={`/work/${prevProject.slug}`} className="group">
               <p className="font-mono text-xs text-foreground/40 mb-1">
                 &larr; Previous
               </p>

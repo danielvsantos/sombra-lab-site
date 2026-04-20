@@ -1,26 +1,23 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import MuxPlayer from "@mux/mux-player-react/lazy";
 
 interface VideoLightboxProps {
-  src: string | null;
-  poster?: string;
+  playbackId: string | null;
   onClose: () => void;
 }
 
 export default function VideoLightbox({
-  src,
-  poster,
+  playbackId,
   onClose,
 }: VideoLightboxProps) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
   const stableOnClose = useCallback(() => onClose(), [onClose]);
 
   useEffect(() => {
-    if (src) {
+    if (playbackId) {
       document.body.style.overflow = "hidden";
       const handleEscape = (e: KeyboardEvent) => {
         if (e.key === "Escape") stableOnClose();
@@ -31,26 +28,11 @@ export default function VideoLightbox({
         window.removeEventListener("keydown", handleEscape);
       };
     }
-  }, [src, stableOnClose]);
-
-  // When the video element mounts with a new src, try to play with audio
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video || !src) return;
-
-    // Try playing with audio first (works because user just clicked)
-    video.muted = false;
-    video.currentTime = 0;
-    video.play().catch(() => {
-      // If autoplay with audio fails, start muted then unmute via controls
-      video.muted = true;
-      video.play().catch(() => {});
-    });
-  }, [src]);
+  }, [playbackId, stableOnClose]);
 
   return (
     <AnimatePresence>
-      {src && (
+      {playbackId && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -77,14 +59,18 @@ export default function VideoLightbox({
             className="relative max-w-6xl w-full max-h-[85vh] flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <video
-              ref={videoRef}
-              key={src}
-              src={src}
-              poster={poster}
-              controls
+            <MuxPlayer
+              key={playbackId}
+              playbackId={playbackId}
+              streamType="on-demand"
+              autoPlay
+              muted={false}
               playsInline
-              className="max-w-full max-h-[85vh] rounded-sm"
+              style={{
+                maxWidth: "100%",
+                maxHeight: "85vh",
+                aspectRatio: "16 / 9",
+              }}
             />
           </motion.div>
         </motion.div>

@@ -1,13 +1,17 @@
 import { MetadataRoute } from "next";
-import { projects } from "@/data/projects";
+import { sanityClient } from "@/sanity/lib/client";
+import { allSlugsQuery } from "@/sanity/lib/queries";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sombralab.com";
 
-  const projectPages = projects.map((p) => ({
-    url: `${baseUrl}/work/${p.slug}`,
-    lastModified: new Date(),
-  }));
+  const slugs = await sanityClient.fetch<{ slug: string }[]>(allSlugsQuery);
+  const projectPages = slugs
+    .filter((s) => s.slug)
+    .map((s) => ({
+      url: `${baseUrl}/work/${s.slug}`,
+      lastModified: new Date(),
+    }));
 
   return [
     { url: baseUrl, lastModified: new Date() },

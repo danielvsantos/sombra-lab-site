@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Project, FilterCategory } from "@/types";
+import type { SanityProject, FilterCategory } from "@/sanity/lib/types";
 import FilterPill from "./FilterPill";
 import ProjectCard from "./ProjectCard";
 import clsx from "clsx";
 
 interface DynamicGridProps {
-  projects: Project[];
+  projects: SanityProject[];
 }
 
 const filters: { label: string; value: FilterCategory }[] = [
@@ -46,7 +46,7 @@ export default function DynamicGrid({ projects }: DynamicGridProps) {
         <AnimatePresence mode="popLayout">
           {filtered.map((project) => (
             <motion.div
-              key={project.slug}
+              key={project._id}
               layout
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}

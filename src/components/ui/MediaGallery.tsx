@@ -5,73 +5,89 @@ import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { Play } from "lucide-react";
 import VideoLightbox from "./VideoLightbox";
+import MuxBackgroundVideo, {
+  type MuxBackgroundVideoRef,
+} from "./MuxBackgroundVideo";
+import { muxPosterUrl } from "@/sanity/lib/resolve";
 import clsx from "clsx";
 
 type Aspect = "vertical" | "horizontal" | "square";
 
-interface GalleryItem {
-  type: "image" | "video";
-  src: string;
-  poster?: string;
+export interface GalleryItem {
+  kind: "image" | "video";
+  // Image fields
+  src?: string;
   alt?: string;
-  aspectRatio?: Aspect;
+  lqip?: string;
+  // Video fields
+  playbackId?: string;
+  poster?: string;
 }
 
 function GalleryVideo({
-  src,
-  poster,
+  playbackId,
   onExpand,
 }: {
-  src: string;
-  poster?: string;
+  playbackId: string;
   onExpand: () => void;
 }) {
-  const ref = useRef<HTMLVideoElement>(null);
+  const ref = useRef<MuxBackgroundVideoRef>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { margin: "-15% 0px" });
 
   useEffect(() => {
-    const video = ref.current;
-    if (!video) return;
-    if (isInView) {
-      video.play().catch(() => {});
-    } else {
-      video.pause();
-    }
+    if (isInView) ref.current?.play();
+    else ref.current?.pause();
   }, [isInView]);
 
   return (
     <div ref={containerRef} className="relative w-full h-full group">
-      <video
+      <MuxBackgroundVideo
         ref={ref}
-        src={src}
-        poster={poster}
-        muted
-        loop
-        playsInline
-        preload="none"
-        className="w-full h-full object-cover rounded-sm"
+        playbackId={playbackId}
+        className="w-full h-full"
       />
-      {/* Click-to-expand button */}
+      {/* Poster stays visible until video plays (covers the Mux player's brief black frame) */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={muxPosterUrl(playbackId)}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none opacity-0 transition-opacity"
+        aria-hidden
+      />
       <button
         onClick={onExpand}
         className="absolute inset-0 flex items-center justify-center bg-background/0 hover:bg-background/30 transition-colors"
         aria-label="Open video with audio"
       >
         <span className="w-14 h-14 rounded-full bg-background/60 backdrop-blur-sm border border-foreground/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-          <Play className="w-5 h-5 ml-0.5" strokeWidth={1.5} fill="currentColor" />
+          <Play
+            className="w-5 h-5 ml-0.5"
+            strokeWidth={1.5}
+            fill="currentColor"
+          />
         </span>
       </button>
     </div>
   );
 }
 
-function GalleryImage({ src, alt }: { src: string; alt?: string }) {
+function GalleryImage({
+  src,
+  alt,
+  lqip,
+}: {
+  src: string;
+  alt?: string;
+  lqip?: string;
+}) {
   return (
     <Image
       src={src}
       alt={alt ?? ""}
       fill
+      placeholder={lqip ? "blur" : "empty"}
+      blurDataURL={lqip}
       className="object-cover rounded-sm"
       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
     />
@@ -100,21 +116,20 @@ function getAspectClass(aspect: Aspect): string {
   }
 }
 
+/**
+ * Guess an aspect ratio for a Mux video using its playback_id.
+ * Mux stores aspect_ratio in asset.data — we didn't thread it all the way
+ * here. For now default every video to "vertical" since almost all the raw
+ * footage is 9:16 or 2:3. If needed we can enrich later.
+ */
+function inferAspect(_item: GalleryItem): Aspect {
+  return "vertical";
+}
+
 export default function MediaGallery({ items }: { items: GalleryItem[] }) {
-  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
-  const [lightboxPoster, setLightboxPoster] = useState<string | undefined>();
+  const [lightboxId, setLightboxId] = useState<string | null>(null);
 
   if (items.length === 0) return null;
-
-  function openLightbox(src: string, poster?: string) {
-    setLightboxSrc(src);
-    setLightboxPoster(poster);
-  }
-
-  function closeLightbox() {
-    setLightboxSrc(null);
-    setLightboxPoster(undefined);
-  }
 
   return (
     <>
@@ -123,7 +138,7 @@ export default function MediaGallery({ items }: { items: GalleryItem[] }) {
         style={{ gridAutoFlow: "dense" }}
       >
         {items.map((item, i) => {
-          const aspect = item.aspectRatio ?? "vertical";
+          const aspect = inferAspect(item);
           return (
             <motion.div
               key={i}
@@ -134,27 +149,25 @@ export default function MediaGallery({ items }: { items: GalleryItem[] }) {
               className={clsx(
                 "relative overflow-hidden rounded-sm",
                 getGridSpanClass(aspect),
-                getAspectClass(aspect)
+                getAspectClass(aspect),
               )}
             >
-              {item.type === "video" ? (
+              {item.kind === "video" && item.playbackId ? (
                 <GalleryVideo
-                  src={item.src}
-                  poster={item.poster}
-                  onExpand={() => openLightbox(item.src, item.poster)}
+                  playbackId={item.playbackId}
+                  onExpand={() => setLightboxId(item.playbackId!)}
                 />
-              ) : (
-                <GalleryImage src={item.src} alt={item.alt} />
-              )}
+              ) : item.kind === "image" && item.src ? (
+                <GalleryImage src={item.src} alt={item.alt} lqip={item.lqip} />
+              ) : null}
             </motion.div>
           );
         })}
       </div>
 
       <VideoLightbox
-        src={lightboxSrc}
-        poster={lightboxPoster}
-        onClose={closeLightbox}
+        playbackId={lightboxId}
+        onClose={() => setLightboxId(null)}
       />
     </>
   );
