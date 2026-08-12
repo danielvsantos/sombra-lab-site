@@ -58,6 +58,7 @@ const ibmPlexMono = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.sombralab.com"),
   title: "Sombra Lab | Creative Production Agency",
   description:
     "High-end creative and production lab in Barcelona. Audiovisual production, fashion styling, and social media management for upscale brands.",
@@ -70,6 +71,21 @@ export const metadata: Metadata = {
       "High-end creative and production lab in Barcelona. Audiovisual production, fashion styling, and social media management for upscale brands.",
     siteName: "Sombra Lab",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Sombra Lab",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sombra Lab | Creative Production Agency",
+    description:
+      "High-end creative and production lab in Barcelona. Audiovisual production, fashion styling, and social media management for upscale brands.",
+    images: ["/og-image.png"],
   },
 };
 
