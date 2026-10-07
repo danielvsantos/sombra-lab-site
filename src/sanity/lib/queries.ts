@@ -1,4 +1,4 @@
-import { groq } from "next-sanity";
+import groq from "groq";
 
 /** Fragment: asset metadata used across queries */
 export const imageFragment = `{
