@@ -1,4 +1,18 @@
-import { defineType, defineField, defineArrayMember } from "sanity";
+import {
+  defineType,
+  defineField,
+  defineArrayMember,
+  type ConditionalPropertyCallbackContext,
+} from "sanity";
+
+// Projects linked to a Sombra Hub client get `hubClientId` from the Hub. The
+// Hub then owns the client name and Instagram handle (it pushes changes on
+// every edit), so those two fields are read-only here. See spec 14 in the
+// sombrahub repo.
+const MANAGED_IN_HUB = "Managed in Sombra Hub — edit it on the client page in the Hub.";
+const MANAGED_IN_HUB_IF_LINKED = "Managed in Sombra Hub (read-only) when this project is linked to a Hub client.";
+const isHubLinked = ({ document }: ConditionalPropertyCallbackContext) =>
+  document?.hubClientId != null;
 
 export const project = defineType({
   name: "project",
@@ -6,9 +20,19 @@ export const project = defineType({
   type: "document",
   fields: [
     defineField({
+      name: "hubClientId",
+      title: "Sombra Hub client ID",
+      type: "number",
+      readOnly: true,
+      hidden: ({ value }) => value == null,
+      description: MANAGED_IN_HUB,
+    }),
+    defineField({
       name: "title",
       title: "Client name",
       type: "string",
+      readOnly: isHubLinked,
+      description: MANAGED_IN_HUB_IF_LINKED,
       validation: (r) => r.required(),
     }),
     defineField({
@@ -58,7 +82,8 @@ export const project = defineType({
       name: "instagram",
       title: "Instagram handle",
       type: "string",
-      description: "e.g. @bravasushi",
+      readOnly: isHubLinked,
+      description: "e.g. @bravasushi. " + MANAGED_IN_HUB_IF_LINKED,
     }),
     defineField({
       name: "featured",
@@ -175,9 +200,17 @@ export const project = defineType({
   preview: {
     select: {
       title: "title",
-      subtitle: "category",
+      category: "category",
+      hubClientId: "hubClientId",
       media: "coverImage",
     },
+    prepare: ({ title, category, hubClientId, media }) => ({
+      title,
+      subtitle: [category, hubClientId != null ? "Sombra Hub" : null]
+        .filter(Boolean)
+        .join(" · "),
+      media,
+    }),
   },
   orderings: [
     {

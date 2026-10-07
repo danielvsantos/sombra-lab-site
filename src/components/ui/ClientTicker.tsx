@@ -1,5 +1,5 @@
 import { sanityClient } from "@/sanity/lib/client";
-import { groq } from "next-sanity";
+import groq from "groq";
 
 // Fetch just the titles in display order — lightweight
 const tickerTitlesQuery = groq`

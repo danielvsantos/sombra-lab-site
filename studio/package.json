@@ -1,0 +1,22 @@
+{
+  "name": "sombra-lab-studio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sanity Studio for sombralab.com, deployed at studio.sombralab.com",
+  "scripts": {
+    "dev": "sanity dev",
+    "build": "sanity build dist --yes"
+  },
+  "dependencies": {
+    "@sanity/vision": "^5.21.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "sanity": "^5.21.0",
+    "sanity-plugin-mux-input": "^2.17.0",
+    "styled-components": "^6.4.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "typescript": "^5"
+  }
+}

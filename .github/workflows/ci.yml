@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Public site: lint + production build (fetches published content from the
+  # public Sanity dataset at build time, like Vercel does).
+  site:
+    name: Site (lint + next build)
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SANITY_PROJECT_ID: 5jy0w4kq
+      NEXT_PUBLIC_SANITY_DATASET: production
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: No Studio packages in the site
+        run: |
+          for pkg in sanity next-sanity @sanity/vision sanity-plugin-mux-input styled-components; do
+            if npm ls "$pkg" --depth=0 >/dev/null 2>&1; then echo "::error::$pkg must live in studio/, not the site"; exit 1; fi
+          done
+      - run: npm run lint
+      - run: npm run build
+
+  # Sanity Studio (studio/): type-check + `sanity build`.
+  studio:
+    name: Studio (sanity build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: studio
+    env:
+      SANITY_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: studio/.nvmrc
+          cache: npm
+          cache-dependency-path: studio/package-lock.json
+      - run: npm ci
+      - run: npx tsc --noEmit -p .
+      - run: npm run build
